@@ -2,34 +2,15 @@ import re
 from abbr import abbr2full
 
 
-def is_last_line(line):
-    return line == '}'
-
-def is_first_line(line):
-    return '@' in line and '=' not in line
-
-def is_content(line):
-    return '=' in line and '{' in line and '}' in line
-
 accepted = [
         'author',
-        # 'booktitle',
+        'booktitle',
         'year',
         'title',
-        'volume',
-        # 'journal',
-        'number',
+        # 'volume',
+        'journal',
+        # 'number',
 ]
-
-def legal_content(line):
-    """
-    :param str line:
-    :rtype: bool
-    """
-    for legal in accepted:
-        if line.startswith(legal):
-            return True
-    return False
 
 
 def raw2all():
@@ -37,40 +18,39 @@ def raw2all():
     with open('./raw.bib', 'r', encoding='utf8') as fp:
         text = fp.read()
 
-    title_pattern = re.compile('\\{(.*)\\}', re.S)
+    pub_pattern = re.compile(r'((\n|^)@.*?)(?=(\n@|$))', re.S)
+    entry_pattern = re.compile(r'(?=\n).*?\},(?=\n)', re.S)
+    bib_items = pub_pattern.findall(text)
+    print('{} bib items found.'.format(len(bib_items)))
+    all_bib_items = list()
 
-    cleaned_text = list()
-    text.replace('\r\n', '\n')
-    lines = text.split('\n')
-    for line in lines:
-        if is_first_line(line):
-            cleaned_text.append(line)
-        elif is_last_line(line):
-            while cleaned_text[-1][-1] == ',':
-                cleaned_text[-1] = cleaned_text[-1][:-1]
-            cleaned_text.append(line)
-            cleaned_text.append('')
-        elif is_content(line):
-            if legal_content(line):
-                cleaned_text.append(line)
-            elif line.startswith('booktitle'):
-                booktitle = title_pattern.findall(line)[0]
-                booktitle = abbr2full(booktitle)
-                new_title = 'booktitle = {%s},' % booktitle
-                cleaned_text.append(new_title)
-            elif line.startswith('journal'):
-                booktitle = title_pattern.findall(line)[0]
-                booktitle = abbr2full(booktitle)
-                new_title = 'journal = {%s},' % booktitle
-                cleaned_text.append(new_title)
-        else:
-            if len(line) == 0:
-                continue
-            print(line)
-            raise NotImplementedError
-    all_text = '\n'.join(cleaned_text)
-    with open('all.bib', 'w', encoding='utf8') as fp:
-        fp.write(all_text)
+    for bib_item in bib_items:
+        content = bib_item[0]
+        if content[0] == '\n':
+            content = content[1:]
+        first_n = content.index('\n')
+        first_line = content[:first_n]
+        bracket_idx = first_line.index('{')
+        bib_type = first_line[1:bracket_idx]
+        content = '\n' + content[first_n+1:-2] + ',\n'
+
+
+        all_entries_raw = list(entry_pattern.findall(content))
+        all_entries = list()
+        for entry_raw in all_entries_raw:
+            eq_idx = entry_raw.index(' = ')
+            all_entries.append([
+                entry_raw[1:eq_idx],
+                entry_raw[1:-1]
+            ])
+        this_item = list()
+        for entry_name, entry in all_entries:
+            if entry_name in accepted:
+                this_item.append(entry)
+        item_str = first_line + '\n' + ',\n'.join(this_item) + '}'
+        all_bib_items.append(item_str)
+    with open('all.bib', 'w') as fp:
+        fp.write('\n'.join(all_bib_items))
 
 
 if __name__ == '__main__':

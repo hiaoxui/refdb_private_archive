@@ -76,3 +76,5 @@ def abbr2full(abbr):
 
 if __name__ == '__main__':
     print(abbr2full('ACL-HLT'))
+    print(abbr2full('XYZ'))
+    print(abbr2full('This is a conference'))
