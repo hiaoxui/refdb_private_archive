@@ -28,6 +28,7 @@ mapping = {
     'ILSVRC': 'ImageNet Large Scale Visual Recognition Challenge',
     'INLG': 'International Natural Language Generation Conference',
     'IROS': 'International Conference on Intelligent Robots and Systems',
+    'ISER': 'International Symposium on Experimental Robotics',
     'JAIR': 'Journal of Artificial Intelligence Research',
     'JASA': 'Journal of the American Statistical Association',
     'JMLR': 'Journal of Machine Learning Research',
@@ -35,7 +36,7 @@ mapping = {
     'LREC': 'Language Resources and Evaluation Conference',
     'MLSLP': 'Symposium on Machine Learning in Speech and Language Processing',
     'NAACL': 'North American Association for Computational Linguistics',
-    'NIPS': 'Advances in Neural Information Processing Systems',
+    'NeurIPS': 'Advances in Neural Information Processing Systems',
     'NODALIDA': 'Nordic Conference on Computational Linguistics',
     'OSDI': 'Operating Systems Design and Implementation',
     'PAMI': 'IEEE Transactions on Pattern Analysis and Machine Intelligence',
@@ -51,6 +52,7 @@ mapping = {
     'TSP': 'IEEE Transaction on Signal Processing',
     'UAI': 'Uncertainty in Artificial Intelligence',
     'UIST': 'User Interface Software and Technology',
+    'WSDM': 'Web Search and Data Mining',
     'WWW': 'World Wide Web',
 }
 
@@ -66,12 +68,12 @@ def abbr2full(abbr):
         ret = ''
         for part in parts:
             ret += ' and ' + mapping[part]
-        ret = ret[5:] + ' (%s)' % abbr
+        ret = ret[5:] + f' ({abbr})'
         return ret.replace('  ', ' ').strip()
-    elif len(is_abbr) == 1 and not is_abbr[0]:
+    elif not is_abbr[0]:
         return abbr.replace('  ', ' ').strip()
     else:
-        raise Exception('Unrecognized abbreviation: %s' & abbr)
+        raise Exception(f'Unrecognized abbreviation: {abbr}')
 
 
 if __name__ == '__main__':
