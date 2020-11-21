@@ -1,61 +1,112 @@
-import re
-from abbr import abbr2full
+import bibtexparser
+from bibtexparser.bparser import BibTexParser
+from bibtexparser.bwriter import BibTexWriter
 
 
-accepted = [
-        'author',
-        'booktitle',
-        'year',
-        'title',
-        # 'volume',
-        'journal',
-        # 'number',
-]
+mapping = {
+    'AAAI': 'Association for the Advancement of Artificial Intelligence',
+    'ACL': 'Association for Computational Linguistics',
+    'AI': 'Artificial Intelligence',
+    'AISTATS': 'Artificial Intelligence and Statistics',
+    'ASRU': 'IEEE Automatic Speech Recognition and Understanding Workshop',
+    'CAV': 'Computer Aided Verification',
+    'CHI': 'Conference on Human Factors in Computing Systems',
+    'CLCLing': 'International Conference on Computational Linguistics and Intelligent Text Processing',
+    'COLING': 'International Conference on Computational Linguistics',
+    'CoNLL': 'Computational Natural Language Learning',
+    'CVPR': 'Computer Vision and Pattern Recognition',
+    'COLT': 'Conference on Learning Theory',
+    'EACL': 'European Association for Computational Linguistics',
+    'ECCV': 'European Conference on Computer Vision',
+    'EMNLP': 'Empirical Methods in Natural Language Processing',
+    'FOCS': 'Foundations of Computer Science',
+    'HLT': 'Human Language Technology',
+    'ICCV': 'IEEE International Conference on Computer Vision',
+    'ICIPS': 'IEEE International Conference on Intelligent Processing Systems',
+    'ICLR': 'International Conference on Learning Representations',
+    'ICML': 'International Conference on Machine Learning',
+    'ICRA': 'International Conference on Robotics and Automation',
+    'ICSE': 'International Conference on Software Engineering',
+    'ICTAI': 'IEEE International Conference on Tools with Artificial Intelligence',
+    'IJCAI': 'International Joint Conference on Artificial Intelligence',
+    'IJCNLP': 'International Joint Conference on Natural Language Processing',
+    'ILSVRC': 'ImageNet Large Scale Visual Recognition Challenge',
+    'INLG': 'International Natural Language Generation Conference',
+    'IROS': 'International Conference on Intelligent Robots and Systems',
+    'ISER': 'International Symposium on Experimental Robotics',
+    'JAIR': 'Journal of Artificial Intelligence Research',
+    'JASA': 'Journal of the American Statistical Association',
+    'JMLR': 'Journal of Machine Learning Research',
+    'KDD': 'International Conference on Knowledge Discovery and Data Mining',
+    'LREC': 'Language Resources and Evaluation Conference',
+    'MLSLP': 'Symposium on Machine Learning in Speech and Language Processing',
+    'NAACL': 'North American Association for Computational Linguistics',
+    'NeurIPS': 'Advances in Neural Information Processing Systems',
+    'NODALIDA': 'Nordic Conference on Computational Linguistics',
+    'OSDI': 'Operating Systems Design and Implementation',
+    'PAMI': 'IEEE Transactions on Pattern Analysis and Machine Intelligence',
+    'RECSYS': 'ACM Conference on Recommender Systems',
+    'SALT': 'Semantics and Linguistic Theory',
+    'SIGIR': 'ACM Special Interest Group on Information Retreival',
+    'SODA': 'Symposium on Discrete Algorithms',
+    'STOC': 'Symposium on Theory of Computing',
+    'TACL': 'Transactions of the Association for Computational Linguistics',
+    'TFS': 'IEEE Transaction on Fuzzy Systems',
+    'TNN': 'IEEE Transaction on Neural Networks',
+    'TOIS': 'ACM Transactions on Information Systems',
+    'TSP': 'IEEE Transaction on Signal Processing',
+    'UAI': 'Uncertainty in Artificial Intelligence',
+    'UIST': 'User Interface Software and Technology',
+    'WSDM': 'Web Search and Data Mining',
+    'WWW': 'World Wide Web',
+}
 
+
+def abbr2full(abbr: str):
+    """
+    :param str abbr:
+    :rtype: str
+    """
+    abbr = abbr.replace('{', '').replace('}', '')
+    parts = abbr.split('-')
+    is_abbr = [part in mapping for part in parts]
+    if all(is_abbr):
+        ret = ''
+        for part in parts:
+            ret += ' and ' + mapping[part]
+        ret = ret[5:] + f' ({abbr})'
+        return ret.replace('  ', ' ').strip()
+    elif not is_abbr[0]:
+        return abbr.replace('  ', ' ').strip()
+    else:
+        raise Exception(f'Unrecognized abbreviation: {abbr}')
 
 def raw2all():
 
-    with open('./raw.bib', 'r', encoding='utf8') as fp:
-        text = fp.read()
+    parser = BibTexParser(common_strings=False)
+    raw_text = open('./raw.bib', 'r', encoding='utf8').readlines()
+    raw_text = '\n'.join(filter(lambda line: 'month = ' not in line, raw_text))
+    bib_db = bibtexparser.loads(raw_text, parser)
 
-    pub_pattern = re.compile(r'((\n|^)@.*?)(?=(\n@|$))', re.S)
-    entry_pattern = re.compile(r'(?=\n).*?\},(?=\n)', re.S)
-    book_pattern = re.compile(r'= \{(.*)\}')
+    def process_entry(entry):
+        if 'journal' in entry:
+            entry['journal'] = abbr2full(entry['journal'])
+        if 'booktitle' in entry:
+            entry['booktitle'] = abbr2full(entry['booktitle'])
+        for to_remove in [
+            'abstract', 'doi', 'keywords', 'file', 'address', 'annote', 'editor', 'isbn', 'issn', 'language',
+            'note', 'shorttitle', 'url', 'urldate',
+        ]:
+            if to_remove in entry:
+                del entry[to_remove]
+        return entry
 
-    bib_items = pub_pattern.findall(text)
-    print('{} bib items found.'.format(len(bib_items)))
-    all_bib_items = list()
-
-    for bib_item in bib_items:
-        content = bib_item[0]
-        if content[0] == '\n':
-            content = content[1:]
-        first_n = content.index('\n')
-        first_line = content[:first_n]
-        bracket_idx = first_line.index('{')
-        bib_type = first_line[1:bracket_idx]
-        content = '\n' + content[first_n+1:-2] + ',\n'
-
-        all_entries_raw = list(entry_pattern.findall(content))
-        all_entries = list()
-        for entry_raw in all_entries_raw:
-            eq_idx = entry_raw.index(' = ')
-            all_entries.append([
-                entry_raw[1:eq_idx],
-                entry_raw[1:-1]
-            ])
-        this_item = list()
-        for entry_name, entry in all_entries:
-            if entry_name in accepted:
-                if entry_name in ['journal', 'booktitle']:
-                    book_name = book_pattern.findall(entry)[0]
-                    book_name = abbr2full(book_name)
-                    entry = r'{} = {{{}}}'.format(entry_name, book_name)
-                this_item.append(entry)
-        item_str = first_line + '\n' + ',\n'.join(this_item) + '\n}'
-        all_bib_items.append(item_str)
-    with open('all.bib', 'w') as fp:
-        fp.write('\n\n'.join(all_bib_items))
+    bib_db.entries = list(map(process_entry, bib_db.entries))
+    writer = BibTexWriter()
+    writer.indent = '  '
+    # writer.comma_first = True
+    with open('ref.bib', 'w') as bibfile:
+        bibfile.write(writer.write(bib_db))
 
 
 if __name__ == '__main__':
