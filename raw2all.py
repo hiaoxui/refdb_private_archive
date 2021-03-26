@@ -83,7 +83,7 @@ def abbr2full(abbr: str):
 
 def raw2all():
 
-    parser = BibTexParser(common_strings=False)
+    parser = BibTexParser(common_strings=False, ignore_nonstandard_types=False)
     raw_text = open('./raw.bib', 'r', encoding='utf8').readlines()
     raw_text = '\n'.join(filter(lambda line: 'month = ' not in line, raw_text))
     bib_db = bibtexparser.loads(raw_text, parser)
