@@ -95,10 +95,14 @@ def raw2all():
             entry['booktitle'] = abbr2full(entry['booktitle'])
         for to_remove in [
             'abstract', 'doi', 'keywords', 'file', 'address', 'annote', 'editor', 'isbn', 'issn', 'language',
-            'note', 'shorttitle', 'url', 'urldate',
+            'note', 'shorttitle', 'url', 'urldate', 'eprint', 'eprinttype', 'location', 'langid', 'archiveprefix',
+            'entrysubtype', 'annotation', 'editorbtype', 'eventtitle', 'editorb', 'options', 'shortjornal'
         ]:
             if to_remove in entry:
                 del entry[to_remove]
+        if 'date' in entry and 'year' not in entry:
+            entry['year'] = entry['date'][:4]
+            del entry['date']
         return entry
 
     bib_db.entries = list(map(process_entry, bib_db.entries))
