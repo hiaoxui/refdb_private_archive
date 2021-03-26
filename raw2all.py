@@ -103,6 +103,8 @@ def raw2all():
         if 'date' in entry and 'year' not in entry:
             entry['year'] = entry['date'][:4]
             del entry['date']
+        if entry['ENTRYTYPE'] == 'report':
+            entry['ENTRYTYPE'] = 'misc'
         return entry
 
     bib_db.entries = list(map(process_entry, bib_db.entries))
