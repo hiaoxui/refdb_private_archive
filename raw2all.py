@@ -89,8 +89,9 @@ def raw2all():
     bib_db = bibtexparser.loads(raw_text, parser)
 
     def process_entry(entry):
-        if 'journal' in entry:
-            entry['journal'] = abbr2full(entry['journal'])
+        if entry['ENTRYTYPE'] == 'article':
+            entry['journal'] = abbr2full(entry['journaltitle'])
+            del entry['journaltitle']
         if 'booktitle' in entry:
             entry['booktitle'] = abbr2full(entry['booktitle'])
         for to_remove in [
