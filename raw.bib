@@ -7731,6 +7731,24 @@
   file = {/home/hiaoxui/.local/share/zotero_files/storage/B5MIA5BK/Lai et al. - 2017 - RACE Large-scale ReAding Comprehension Dataset From Examinations(2).pdf}
 }
 
+@inproceedings{lai2020ContextAnalysisPretrained,
+  title = {Context {{Analysis}} for {{Pre-trained Masked Language Models}}},
+  booktitle = {{{EMNLP}}},
+  author = {Lai, Yi-An and Lalwani, Garima and Zhang, Yi},
+  date = {2020},
+  pages = {3789--3804},
+  publisher = {{Association for Computational Linguistics}},
+  location = {{Online}},
+  doi = {10.18653/v1/2020.findings-emnlp.338},
+  url = {https://www.aclweb.org/anthology/2020.findings-emnlp.338},
+  urldate = {2022-02-10},
+  abstract = {Pre-trained language models that learn contextualized word representations from a large unannotated corpus have become a standard component for many state-of-the-art NLP systems. Despite their successful applications in various downstream NLP tasks, the extent of contextual impact on the word representation has not been explored. In this paper, we present a detailed analysis of contextual impact in Transformer- and BiLSTM-based masked language models. We follow two different approaches to evaluate the impact of context: a masking based approach that is architecture agnostic, and a gradient based approach that requires back-propagation through networks. The findings suggest significant differences on the contextual impact between the two model architectures. Through further breakdown of analysis by syntactic categories, we find the contextual impact in Transformer-based MLM aligns well with linguistic intuition. We further explore the Transformer attention pruning based on our findings in contextual analysis.},
+  eventtitle = {Findings of the {{Association}} for {{Computational Linguistics}}: {{EMNLP}} 2020},
+  langid = {english},
+  keywords = {unread},
+  file = {/home/hiaoxui/.local/share/zotero_files/storage/YYXK49YZ/Lai et al. - 2020 - Context Analysis for Pre-trained Masked Language M.pdf}
+}
+
 @report{lai2021EndtoendNeuralCoreference,
   title = {End-to-End {{Neural Coreference Resolution Revisited}}: {{A Simple}} yet {{Effective Baseline}}},
   shorttitle = {End-to-End {{Neural Coreference Resolution Revisited}}},
@@ -11478,6 +11496,22 @@
   file = {/home/hiaoxui/.local/share/zotero_files/storage/7T4UB7AG/Press et al. - 2020 - Improving Transformer Models by Reordering their S.pdf}
 }
 
+@inproceedings{press2021ShortformerBetterLanguage,
+  title = {Shortformer: {{Better Language Modeling}} Using {{Shorter Inputs}}},
+  shorttitle = {Shortformer},
+  booktitle = {{{ACL}}},
+  author = {Press, Ofir and Smith, Noah A. and Lewis, Mike},
+  date = {2021-06-02},
+  eprint = {2012.15832},
+  eprinttype = {arxiv},
+  url = {http://arxiv.org/abs/2012.15832},
+  urldate = {2022-02-10},
+  abstract = {Increasing the input length has been a driver of progress in language modeling with transformers. We identify conditions where shorter inputs are not harmful, and achieve perplexity and efficiency improvements through two new methods that decrease input length. First, we show that initially training a model on short subsequences before moving on to longer ones both reduces overall training time and, surprisingly, substantially improves perplexity. Second, we show how to improve the efficiency of recurrence methods in transformers, which let models condition on previously processed tokens when generating sequences that exceed the maximal length the transformer can handle at once. Existing methods require computationally expensive relative position embeddings; we introduce a simple alternative of adding absolute position embeddings to queries and keys instead of to word embeddings, which efficiently produces superior results. We show that these recurrent models also benefit from short input lengths. Combining these techniques speeds up training by a factor of 1.65, reduces memory usage, and substantially improves perplexity on WikiText-103, without adding any parameters.},
+  archiveprefix = {arXiv},
+  keywords = {unread},
+  file = {/home/hiaoxui/.local/share/zotero_files/storage/D9JRVZ6V/Press et al. - 2021 - Shortformer Better Language Modeling using Shorte.pdf;/home/hiaoxui/.local/share/zotero_files/storage/WHKD3RX5/2012.html}
+}
+
 @article{pustejovsky2003TIMEBANKCorpus,
   title = {The {{TIMEBANK Corpus}}},
   author = {Pustejovsky, J. and Hanks, P. and Sauri, R. and See, A. and Gaizauskas, R. and Setzer, A. and Sundheim, B. and Radev, D. and Day, D. and Ferro, L. and Lazo, M.},
@@ -11664,6 +11698,21 @@
   eventtitle = {2020},
   keywords = {unread},
   file = {/home/hiaoxui/.local/share/zotero_files/storage/53MPI5BQ/Rae et al. - 2019 - Compressive Transformers for Long-Range Sequence M.pdf;/home/hiaoxui/.local/share/zotero_files/storage/ZFN9HGBF/1911.html}
+}
+
+@inproceedings{rae2020TransformersNeedDeep,
+  title = {Do {{Transformers Need Deep Long-Range Memory}}},
+  booktitle = {{{ACL}}},
+  author = {Rae, Jack W. and Razavi, Ali},
+  date = {2020-07-07},
+  eprint = {2007.03356},
+  eprinttype = {arxiv},
+  url = {http://arxiv.org/abs/2007.03356},
+  urldate = {2022-02-09},
+  abstract = {Deep attention models have advanced the modelling of sequential data across many domains. For language modelling in particular, the Transformer-XL -- a Transformer augmented with a long-range memory of past activations -- has been shown to be state-of-the-art across a variety of well-studied benchmarks. The Transformer-XL incorporates a long-range memory at every layer of the network, which renders its state to be thousands of times larger than RNN predecessors. However it is unclear whether this is necessary. We perform a set of interventions to show that comparable performance can be obtained with 6X fewer long range memories and better performance can be obtained by limiting the range of attention in lower layers of the network.},
+  archiveprefix = {arXiv},
+  keywords = {unread},
+  file = {/home/hiaoxui/.local/share/zotero_files/storage/3MVRV2IP/Rae and Razavi - 2020 - Do Transformers Need Deep Long-Range Memory.pdf;/home/hiaoxui/.local/share/zotero_files/storage/EVI2WR2A/2007.html}
 }
 
 @report{raffel2019ExploringLimitsTransfer,
