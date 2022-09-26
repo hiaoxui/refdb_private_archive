@@ -104,7 +104,7 @@ def raw2all():
         if 'date' in entry and 'year' not in entry:
             entry['year'] = entry['date'][:4]
             del entry['date']
-        if entry['ENTRYTYPE'] == 'report':
+        if entry['ENTRYTYPE'] in ['report', 'unpublished']:
             entry['ENTRYTYPE'] = 'misc'
         return entry
 
