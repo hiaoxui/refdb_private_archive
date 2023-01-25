@@ -97,10 +97,13 @@ def raw2all():
         for to_remove in [
             'abstract', 'doi', 'keywords', 'file', 'address', 'annote', 'editor', 'isbn', 'issn', 'language',
             'note', 'shorttitle', 'url', 'urldate', 'eprint', 'eprinttype', 'location', 'langid', 'archiveprefix',
-            'entrysubtype', 'annotation', 'editorbtype', 'eventtitle', 'editorb', 'options', 'shortjornal'
+            'entrysubtype', 'annotation', 'editorbtype', 'eventtitle', 'editorb', 'options', 'shortjornal',
+            'primaryclass'
         ]:
             if to_remove in entry:
                 del entry[to_remove]
+        if 'arXiv' in entry.get('publisher', ''):
+            entry.pop('publisher')
         if 'date' in entry and 'year' not in entry:
             entry['year'] = entry['date'][:4]
             del entry['date']
