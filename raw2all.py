@@ -104,6 +104,8 @@ def raw2all():
                 del entry[to_remove]
         if 'arXiv' in entry.get('publisher', ''):
             entry.pop('publisher')
+        if 'arXiv' in entry.get('number', ''):
+            entry.pop('number')
         if 'date' in entry and 'year' not in entry:
             entry['year'] = entry['date'][:4]
             del entry['date']
