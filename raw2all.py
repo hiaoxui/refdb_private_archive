@@ -5,7 +5,7 @@ from bibtexparser.bwriter import BibTexWriter
 
 mapping = {
     'AAAI': 'Association for the Advancement of Artificial Intelligence',
-    'ACL': 'Association for Computational Linguistics',
+    'ACL': 'Annual Meeting of the Association for Computational Linguistics',
     'AI': 'Artificial Intelligence',
     'AISTATS': 'Artificial Intelligence and Statistics',
     'ASRU': 'IEEE Automatic Speech Recognition and Understanding Workshop',
@@ -13,12 +13,12 @@ mapping = {
     'CHI': 'Conference on Human Factors in Computing Systems',
     'CLCLing': 'International Conference on Computational Linguistics and Intelligent Text Processing',
     'COLING': 'International Conference on Computational Linguistics',
-    'CoNLL': 'Computational Natural Language Learning',
-    'CVPR': 'Computer Vision and Pattern Recognition',
+    'CoNLL': 'The SIGNLL Conference on Computational Natural Language Learning',
+    'CVPR': 'The IEEE/CVF Conference on Computer Vision and Pattern Recognition',
     'COLT': 'Conference on Learning Theory',
-    'EACL': 'European Association for Computational Linguistics',
+    'EACL': 'Annual Conference of the European Chapter of the Association for Computational Linguistics',
     'ECCV': 'European Conference on Computer Vision',
-    'EMNLP': 'Empirical Methods in Natural Language Processing',
+    'EMNLP': 'Conference on Empirical Methods in Natural Language Processing',
     'FOCS': 'Foundations of Computer Science',
     'HLT': 'Human Language Technology',
     'ICCV': 'IEEE International Conference on Computer Vision',
@@ -40,8 +40,8 @@ mapping = {
     'KDD': 'International Conference on Knowledge Discovery and Data Mining',
     'LREC': 'Language Resources and Evaluation Conference',
     'MLSLP': 'Symposium on Machine Learning in Speech and Language Processing',
-    'NAACL': 'North American Association for Computational Linguistics',
-    'NeurIPS': 'Advances in Neural Information Processing Systems',
+    'NAACL': 'Annual Conference of the North American Chapter of the Association for Computational Linguistics',
+    'NeurIPS': 'Conference on Neural Information Processing Systems',
     'NODALIDA': 'Nordic Conference on Computational Linguistics',
     'OSDI': 'Operating Systems Design and Implementation',
     'PAMI': 'IEEE Transactions on Pattern Analysis and Machine Intelligence',
@@ -111,6 +111,10 @@ def raw2all():
             del entry['date']
         if entry['ENTRYTYPE'] in ['report', 'unpublished', 'online']:
             entry['ENTRYTYPE'] = 'misc'
+        if entry['ENTRYTYPE'] == 'inproceedings':
+            entry.pop('pages', None)
+            entry.pop('issue', None)
+            entry.pop('publisher', None)
         return entry
 
     bib_db.entries = list(map(process_entry, bib_db.entries))
