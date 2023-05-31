@@ -34,6 +34,7 @@ mapping = {
     'INLG': 'International Natural Language Generation Conference',
     'IROS': 'International Conference on Intelligent Robots and Systems',
     'ISER': 'International Symposium on Experimental Robotics',
+    'IWCS': 'International Conference on Computational Semantics',
     'JAIR': 'Journal of Artificial Intelligence Research',
     'JASA': 'Journal of the American Statistical Association',
     'JMLR': 'Journal of Machine Learning Research',
@@ -58,6 +59,7 @@ mapping = {
     'UAI': 'Uncertainty in Artificial Intelligence',
     'UIST': 'User Interface Software and Technology',
     'WSDM': 'Web Search and Data Mining',
+    'WMT': 'Conference on Machine Translation',
     'WWW': 'World Wide Web',
 }
 
