@@ -98,7 +98,7 @@ def raw2all():
             entry['booktitle'] = abbr2full(entry['booktitle'])
         for to_remove in [
             'abstract', 'doi', 'keywords', 'file', 'address', 'annote', 'editor', 'isbn', 'issn', 'language',
-            'note', 'shorttitle', 'url', 'urldate', 'eprint', 'eprinttype', 'location', 'langid', 'archiveprefix',
+            'note', 'shorttitle', 'urldate', 'eprint', 'eprinttype', 'location', 'langid', 'archiveprefix',
             'entrysubtype', 'annotation', 'editorbtype', 'eventtitle', 'editorb', 'options', 'shortjornal',
             'primaryclass'
         ]:
