@@ -46,6 +46,7 @@ mapping = {
     'NODALIDA': 'Nordic Conference on Computational Linguistics',
     'OSDI': 'Operating Systems Design and Implementation',
     'PAMI': 'IEEE Transactions on Pattern Analysis and Machine Intelligence',
+    'PNAS': 'Proceedings of the National Academy of Sciences of the United States of America',
     'RECSYS': 'ACM Conference on Recommender Systems',
     'SALT': 'Semantics and Linguistic Theory',
     'SIGIR': 'ACM Special Interest Group on Information Retreival',
@@ -65,10 +66,6 @@ mapping = {
 
 
 def abbr2full(abbr: str):
-    """
-    :param str abbr:
-    :rtype: str
-    """
     abbr = abbr.replace('{', '').replace('}', '')
     parts = abbr.split('-')
     is_abbr = [part in mapping for part in parts]
@@ -83,43 +80,49 @@ def abbr2full(abbr: str):
     else:
         raise Exception(f'Unrecognized abbreviation: {abbr}')
 
-def raw2all():
 
+def raw2all():
     parser = BibTexParser(common_strings=False, ignore_nonstandard_types=False)
-    raw_text = open('./raw.bib', 'r', encoding='utf8').readlines()
-    raw_text = '\n'.join(filter(lambda line: 'month = ' not in line, raw_text))
-    bib_db = bibtexparser.loads(raw_text, parser)
+    raw_path = './raw.bib'
+    bib_db = bibtexparser.loads(open(raw_path, 'r', encoding='utf8').read(), parser)
 
     def process_entry(entry):
-        if entry['ENTRYTYPE'] == 'article':
-            entry['journal'] = abbr2full(entry['journaltitle'])
-            del entry['journaltitle']
-        if 'booktitle' in entry:
-            entry['booktitle'] = abbr2full(entry['booktitle'])
-        for to_remove in [
-            'abstract', 'doi', 'keywords', 'file', 'address', 'annote', 'editor', 'isbn', 'issn', 'language',
-            'note', 'shorttitle', 'urldate', 'eprint', 'eprinttype', 'location', 'langid', 'archiveprefix',
-            'entrysubtype', 'annotation', 'editorbtype', 'eventtitle', 'editorb', 'options', 'shortjornal',
-            'primaryclass'
-        ]:
-            if to_remove in entry:
-                del entry[to_remove]
-        if 'arXiv' in entry.get('publisher', ''):
-            entry.pop('publisher')
-        if 'arXiv' in entry.get('number', ''):
-            entry.pop('number')
+        # remove illegal items
+        if 'author' not in entry or entry['author'] == '':
+            return None
+        if 'nobib' in entry.get('keywords', ''):
+            return None
+        # clean up fields
         if 'date' in entry and 'year' not in entry:
             entry['year'] = entry['date'][:4]
             del entry['date']
-        if entry['ENTRYTYPE'] in ['report', 'unpublished', 'online']:
+        if entry['ENTRYTYPE'] == 'article':
+            entry['journal'] = abbr2full(entry['journaltitle'])
+            entry.pop('journaltitle', None)
+            entry.pop('booktitle', None)
+        elif entry['ENTRYTYPE'] == 'inproceedings':
+            entry['booktitle'] = abbr2full(entry['booktitle'])
+            for to_remove in ['journal', 'volumn', 'number', 'pages', 'publisher', 'issue']:
+                entry.pop(to_remove, None)
+        else:
             entry['ENTRYTYPE'] = 'misc'
-        if entry['ENTRYTYPE'] == 'inproceedings':
-            entry.pop('pages', None)
-            entry.pop('issue', None)
-            entry.pop('publisher', None)
+            for to_remove in ['journal', 'volumn', 'number', 'pages', 'publisher', 'issue', 'booktitle']:
+                entry.pop(to_remove, None)
+
+        if 'url' in entry:
+            # prefer using https
+            entry['url'] = entry['url'].replace('http://', 'https://')
+            if not entry['url'].startswith('http'):
+                entry.pop('url', None)
+
+        tokeep = ['author', 'booktitle', 'year', 'url', 'journal', 'volumn', 'number', 'pages', 'issue', 'ENTRYTYPE', 'ID']
+        for k in list(entry):
+            if k not in tokeep:
+                entry.pop(k, None)
         return entry
 
-    bib_db.entries = list(map(process_entry, bib_db.entries))
+    bib_db.entries = list(filter(lambda z: z is not None, map(process_entry, bib_db.entries)))
+
     writer = BibTexWriter()
     writer.indent = '  '
     # writer.comma_first = True
