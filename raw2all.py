@@ -101,7 +101,7 @@ def raw2all():
             entry.pop('journaltitle', None)
             entry.pop('booktitle', None)
         elif entry['ENTRYTYPE'] == 'inproceedings':
-            entry['booktitle'] = abbr2full(entry['booktitle'])
+            entry['booktitle'] = 'Proceedings of ' + abbr2full(entry['booktitle']).strip()
             for to_remove in ['journal', 'volumn', 'number', 'pages', 'publisher', 'issue']:
                 entry.pop(to_remove, None)
         else:
@@ -114,8 +114,13 @@ def raw2all():
             entry['url'] = entry['url'].replace('http://', 'https://')
             if not entry['url'].startswith('http'):
                 entry.pop('url', None)
+        elif 'doi' in entry:
+            entry['url'] = 'https://doi.org/' + entry['doi']
 
-        tokeep = ['author', 'booktitle', 'year', 'url', 'journal', 'volumn', 'number', 'pages', 'issue', 'ENTRYTYPE', 'ID']
+        tokeep = [
+            'author', 'booktitle', 'year', 'url', 'journal', 'volumn', 'number',
+            'pages', 'issue', 'ENTRYTYPE', 'ID', 'title',
+        ]
         for k in list(entry):
             if k not in tokeep:
                 entry.pop(k, None)
